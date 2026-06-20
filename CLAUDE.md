@@ -142,6 +142,11 @@ secom-pe-project/
   - 전체 모델 성능 집계 + SHAP 핵심 센서 재집계 + 발표용 내러티브
   - 1장 슬라이드 자동 생성 → `outputs/portfolio_slide.png` (16:9)
   - README에 슬라이드·결과 표·핵심 그림 임베드 완료
+- **Step 9. (심화) class_weight + 임계값 튜닝 완료** — `notebooks/09_classweight_threshold.ipynb`
+  - SMOTE 미사용. RF `class_weight='balanced'`, XGB `scale_pos_weight=14.1` + CV 임계값 튜닝
+  - **결과: 합성 없이 class_weight가 SMOTE와 동등~우수** (RF class_weight Recall 0.381/F1 0.320/AUC 0.808 > RF SMOTE 0.333/0.311/0.805)
+  - 근거: 합성데이터 신뢰성 이슈 + 실제 샘플 위 SHAP 해석 이점. 그림 `13_smote_vs_classweight.png`
+  - 저장: `rf_classweight.joblib`, `xgb_scaleposweight.joblib`
 
 ## 환경 메모 (macOS)
 - 가상환경 `.venv/` (Python 3.9.6), Jupyter 커널 `secom-pe` ("Python (secom-pe)")

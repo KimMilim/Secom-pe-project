@@ -53,11 +53,29 @@
 | 6. HPO | `06_hyperparameter_tuning.ipynb` | RandomizedSearchCV로 RF·XGB 튜닝 (RF Recall 0.33→0.57) |
 | 7. 모델 비교 | `07_lightgbm_comparison.ipynb` | LightGBM 추가, 3-모델 동일 절차 비교 |
 | 8. 요약 | `08_portfolio_summary.ipynb` | 전체 집계 + 1장 슬라이드 생성 |
+| 9. (심화) 대안 | `09_classweight_threshold.ipynb` | SMOTE 없이 class_weight + 임계값 튜닝 → SMOTE와 비교 |
 
 ### 핵심 성과 3가지
 1. **데이터 누수 차단** — split을 먼저, 결측 기준·median·분산 판정·SMOTE·임계값을 모두 train에서만 학습
 2. **0.5 임계값의 함정 발견·해결** — SMOTE로 학습해도 기본 임계값에선 Recall 0 → 교차검증으로 임계값을 정해 회복
 3. **블랙박스 거부** — SHAP 전역+국소 해석으로 핵심 공정 변수 식별 → 영향 방향·관리 조치까지 제안
+
+---
+
+## 불균형 대응 전략 비교 — SMOTE vs class_weight
+
+> SMOTE로 균형을 맞췄지만, **합성 데이터의 신뢰성 문제** 때문에 실무에서는 `class_weight`/임계값 튜닝이 더 현실적일 수 있다. 합성 없이 **실제 데이터만** 가중치로 다루는 방식을 같은 조건에서 비교했다 (`09_classweight_threshold.ipynb`).
+
+| 전략 | Recall | F1 | ROC-AUC |
+|---|---|---|---|
+| RF (SMOTE) | 0.333 | 0.311 | 0.805 |
+| **RF (class_weight)** | **0.381** | **0.320** | **0.808** |
+| XGB (SMOTE) | 0.333 | 0.280 | 0.724 |
+| **XGB (scale_pos_weight)** | 0.333 | **0.292** | **0.755** |
+
+**합성 데이터 없이 class_weight 방식이 SMOTE와 동등하거나 더 우수**했다. 반도체 센서값처럼 물리 제약이 있는 변수에선 SMOTE의 선형 보간이 *현실에 없는 웨이퍼*를 만들 수 있어, class_weight 방식이 학습·SHAP 해석의 신뢰도 면에서 이점이 있다.
+
+![SMOTE vs class_weight](outputs/figures/13_smote_vs_classweight.png)
 
 ---
 
